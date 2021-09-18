@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAsyncDebounce } from "react-table";
 import tw from "twin.macro";
 
@@ -31,10 +31,10 @@ export function GlobalFilter({
   setGlobalFilter,
 }) {
   const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
+  const [value, setValue] = useState(globalFilter);
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
-  }, 200);
+  }, 300);
 
   return (
     <SearchContainer>

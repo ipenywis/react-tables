@@ -51,14 +51,9 @@ export function Products(props) {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = async () => {
-    console.log("Sending: ");
     const response = await axios
       .get("https://fakestoreapi.com/products")
-      .catch((err) => {
-        console.log("Error: ", err);
-      });
-
-    console.log("Response: ", response);
+      .catch((err) => console.log(err));
 
     if (response) {
       const products = response.data;
@@ -84,7 +79,7 @@ export function Products(props) {
         },
       },
       {
-        id: 2,
+        id: 1,
         title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
         price: 109.95,
         description:
@@ -97,7 +92,7 @@ export function Products(props) {
         },
       },
       {
-        id: 3,
+        id: 1,
         title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
         price: 109.95,
         description:
@@ -109,18 +104,23 @@ export function Products(props) {
           count: 120,
         },
       },
+    ],
+    []
+  );
+
+  const columns = useMemo(
+    () => [
       {
-        id: 4,
-        title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-        price: 109.95,
-        description:
-          "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-        category: "men's clothing",
-        image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-        rating: {
-          rate: 3.9,
-          count: 120,
-        },
+        Header: "Id",
+        accessor: "id",
+      },
+      {
+        Header: "Price",
+        accessor: "price",
+      },
+      {
+        Header: "Title",
+        accessor: "title",
       },
     ],
     []
@@ -139,41 +139,13 @@ export function Products(props) {
                   Header: key,
                   accessor: key,
                   Cell: ({ value }) => <img src={value} />,
-                  maxWidth: 100,
+                  maxWidth: 70,
                 };
 
               return { Header: key, accessor: key };
             })
         : [],
     [products]
-  );
-
-  // const test = products[0]
-  //   ? Object.keys(products[0])
-  //       .filter((key) => key !== "rating")
-  //       .map((key) => ({ Header: key, accessor: key }))
-  //   : [];
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Id",
-        accessor: "id",
-      },
-      {
-        Header: "Title",
-        accessor: "title",
-      },
-      {
-        Header: "Price",
-        accessor: "price",
-      },
-      {
-        Header: "Description",
-        accessor: "description",
-      },
-    ],
-    []
   );
 
   const tableHooks = (hooks) => {
@@ -183,12 +155,7 @@ export function Products(props) {
         id: "Edit",
         Header: "Edit",
         Cell: ({ row }) => (
-          <Button
-            onClick={() => {
-              console.log("Row: ", row);
-              alert("Price: " + row.values.price + "$");
-            }}
-          >
+          <Button onClick={() => alert("Editing: " + row.values.price)}>
             Edit
           </Button>
         ),
@@ -202,8 +169,8 @@ export function Products(props) {
       data: productsData,
     },
     useGlobalFilter,
-    useSortBy,
-    tableHooks
+    tableHooks,
+    useSortBy
   );
 
   const {
@@ -212,22 +179,22 @@ export function Products(props) {
     headerGroups,
     rows,
     prepareRow,
-    state,
-    setGlobalFilter,
     preGlobalFilteredRows,
+    setGlobalFilter,
+    state,
   } = tableInstance;
-
-  const isEven = (idx) => idx % 2 === 0;
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
+  const isEven = (idx) => idx % 2 === 0;
+
   return (
     <>
       <GlobalFilter
-        setGlobalFilter={setGlobalFilter}
         preGlobalFilteredRows={preGlobalFilteredRows}
+        setGlobalFilter={setGlobalFilter}
         globalFilter={state.globalFilter}
       />
       <Table {...getTableProps()}>
@@ -252,9 +219,9 @@ export function Products(props) {
             return (
               <TableRow
                 {...row.getRowProps()}
-                className={isEven(idx) && "bg-green-400 bg-opacity-10"}
+                className={isEven(idx) ? "bg-green-400 bg-opacity-30" : ""}
               >
-                {row.cells.map((cell, i) => (
+                {row.cells.map((cell, idx) => (
                   <TableData {...cell.getCellProps()}>
                     {cell.render("Cell")}
                   </TableData>
